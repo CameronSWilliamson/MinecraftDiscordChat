@@ -1,4 +1,4 @@
 name: MinecraftDiscordChat
 version: 1.0
-main: me.therealkeyis.TutorialPlugin
+main: me.therealkeyis.MinecraftPlugin
 api-version: 1.19

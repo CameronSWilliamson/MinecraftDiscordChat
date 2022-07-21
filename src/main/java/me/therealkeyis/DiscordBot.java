@@ -9,11 +9,12 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class DiscordBot {
     private static DiscordBot instance = null;
-    private final String TOKEN = "OTk5MTE0NzkxNTQzMTE5OTIy.Gia5sx.1ikjOZupHJN1Sc-Igc9_xHzrcxDmVLGnNh3QFw";
-    private final long CHAT_CHANNEL = 999167779779383367L;
+    private static String TOKEN = null;
+    private static Long CHAT_CHANNEL = null;
     DiscordApi client;
 
     private DiscordBot() {
@@ -25,7 +26,6 @@ public class DiscordBot {
             TextChannel channel = event.getChannel();
             if (channel.getId() == CHAT_CHANNEL) {
                 Bukkit.broadcastMessage("<"+event.getMessageAuthor().getDisplayName()+"> "+event.getMessageContent());
-//                Bukkit.broadcastMessage(event.getMessageContent());
             }
         });
     }
@@ -43,5 +43,10 @@ public class DiscordBot {
             instance = new DiscordBot();
         }
         return instance;
+    }
+
+    public static void configureInstance(String discord_token, String chat_channel) throws NumberFormatException {
+        DiscordBot.TOKEN = discord_token;
+        DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
     }
 }
