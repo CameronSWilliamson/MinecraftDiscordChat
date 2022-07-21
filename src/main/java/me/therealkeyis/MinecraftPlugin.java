@@ -7,10 +7,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Discord Chat Minecraft Plugin
+ *
+ * Main class that handles chat interactions
+ */
 public class MinecraftPlugin extends JavaPlugin {
     DiscordBot bot;
     FileConfiguration config = this.getConfig();
 
+    /**
+     * Handles initialization of the plugin
+     *
+     * Sets up defaults and configures the DiscordBot class
+     */
     @Override
     public void onEnable() {
         config.addDefault("discord_token", "Your Discord Bot Token");
@@ -26,14 +36,25 @@ public class MinecraftPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
 
+    /**
+     * Executes cleanup on server stop
+     */
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called!");
     }
 
+    /**
+     * Listens for incoming chat messages and forwards them to DiscordBot
+     */
     private static class ChatListener implements Listener {
         DiscordBot bot = DiscordBot.getInstance();
 
+        /**
+         * Forwards messages to DiscordBot
+         *
+         * @param event The event from sending a chat.
+         */
         @EventHandler
         public void onPlayerChat(AsyncPlayerChatEvent event) {
             Player player = event.getPlayer();

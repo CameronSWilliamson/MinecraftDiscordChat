@@ -4,19 +4,23 @@ import org.bukkit.Bukkit;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.channel.Channel;
-import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
 
 import java.util.Optional;
-import java.util.logging.Logger;
 
+/**
+ * Handles communications to and from the discord api
+ */
 public class DiscordBot {
     private static DiscordBot instance = null;
     private static String TOKEN = null;
     private static Long CHAT_CHANNEL = null;
     DiscordApi client;
 
+    /**
+     * Builds an active DiscordClient.
+     */
     private DiscordBot() {
         client = new DiscordApiBuilder().setToken(TOKEN).login().join();
         client.addMessageCreateListener(event -> {
@@ -30,6 +34,11 @@ public class DiscordBot {
         });
     }
 
+    /**
+     * Sends a message to the channel saved in CHAT_CHANNEL.
+     *
+     * @param content The text to send to the channel.
+     */
     public void sendMessage(String content) {
         Optional<Channel> channel_opt = client.getChannelById(CHAT_CHANNEL);
         if (channel_opt.isPresent()) {
@@ -38,6 +47,11 @@ public class DiscordBot {
         }
     }
 
+    /**
+     * Fetches the current DiscordBot instance.
+     *
+     * @return Static DiscordBot instance
+     */
     public static DiscordBot getInstance() {
         if (instance == null) {
             instance = new DiscordBot();
@@ -45,6 +59,13 @@ public class DiscordBot {
         return instance;
     }
 
+    /**
+     * Configures variables required for discord interaction.
+     *
+     * @param discord_token The token of the Discord Bot
+     * @param chat_channel The channel to send messages to
+     * @throws NumberFormatException Thrown when chat_channel cannot be turned into a long
+     */
     public static void configureInstance(String discord_token, String chat_channel) throws NumberFormatException {
         DiscordBot.TOKEN = discord_token;
         DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
