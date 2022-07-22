@@ -1,10 +1,6 @@
 package me.therealkeyis;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -33,7 +29,8 @@ public class MinecraftPlugin extends JavaPlugin {
             getLogger().warning("Unable to parse channel string, did you forget to set it? Disabling chat listener.");
             return;
         }
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        bot = DiscordBot.getInstance();
+        getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
     }
 
     /**
@@ -42,24 +39,5 @@ public class MinecraftPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called!");
-    }
-
-    /**
-     * Listens for incoming chat messages and forwards them to DiscordBot
-     */
-    private static class ChatListener implements Listener {
-        DiscordBot bot = DiscordBot.getInstance();
-
-        /**
-         * Forwards messages to DiscordBot
-         *
-         * @param event The event from sending a chat.
-         */
-        @EventHandler
-        public void onPlayerChat(AsyncPlayerChatEvent event) {
-            Player player = event.getPlayer();
-            String message = event.getMessage();
-            bot.sendMessage(player.getName() + ": " + message);
-        }
     }
 }

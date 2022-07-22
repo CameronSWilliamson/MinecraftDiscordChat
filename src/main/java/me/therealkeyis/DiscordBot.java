@@ -3,6 +3,7 @@ package me.therealkeyis;
 import org.bukkit.Bukkit;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
@@ -16,6 +17,7 @@ public class DiscordBot {
     private static DiscordBot instance = null;
     private static String TOKEN = null;
     private static Long CHAT_CHANNEL = null;
+    private Integer activePlayerCount = 0;
     DiscordApi client;
 
     /**
@@ -32,6 +34,7 @@ public class DiscordBot {
                 Bukkit.broadcastMessage("<"+event.getMessageAuthor().getDisplayName()+"> "+event.getMessageContent());
             }
         });
+        updateActivePlayerCount();
     }
 
     /**
@@ -69,5 +72,19 @@ public class DiscordBot {
     public static void configureInstance(String discord_token, String chat_channel) throws NumberFormatException {
         DiscordBot.TOKEN = discord_token;
         DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
+    }
+
+    public void increaseActivePlayerCount() {
+        activePlayerCount += 1;
+        updateActivePlayerCount();
+    }
+
+    public void decreaseActivePlayerCount() {
+        activePlayerCount -= 1;
+        updateActivePlayerCount();
+    }
+
+    private void updateActivePlayerCount() {
+        client.updateActivity(ActivityType.WATCHING, activePlayerCount + " players");
     }
 }
