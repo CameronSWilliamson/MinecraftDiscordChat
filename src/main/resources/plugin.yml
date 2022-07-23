@@ -2,3 +2,7 @@ name: MinecraftDiscordChat
 version: 1.0
 main: me.therealkeyis.MinecraftPlugin
 api-version: 1.19
+commands:
+  request:
+    description: Requests a feature from plugin developer
+    usage: /request <feature description>

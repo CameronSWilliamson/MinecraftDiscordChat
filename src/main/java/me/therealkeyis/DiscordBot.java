@@ -7,6 +7,7 @@ import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.user.User;
 
 import java.util.Optional;
 
@@ -48,6 +49,11 @@ public class DiscordBot {
             Optional<TextChannel> txt_channel_opt = channel_opt.get().asTextChannel();
             txt_channel_opt.ifPresent(textChannel -> new MessageBuilder().append(content).send(textChannel));
         }
+    }
+
+    public void messageDev(String requestUser, String content) {
+        User user = client.getUserById(153353058514894848L).join();
+        user.sendMessage(requestUser + ": " + content);
     }
 
     /**

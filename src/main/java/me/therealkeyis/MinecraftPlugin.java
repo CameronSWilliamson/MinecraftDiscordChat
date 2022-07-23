@@ -1,7 +1,10 @@
 package me.therealkeyis;
 
+import me.therealkeyis.commands.Request;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 /**
  * Discord Chat Minecraft Plugin
@@ -31,6 +34,7 @@ public class MinecraftPlugin extends JavaPlugin {
         }
         bot = DiscordBot.getInstance();
         getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
+        Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
     }
 
     /**
