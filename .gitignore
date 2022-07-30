@@ -53,4 +53,4 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
-./move.sh
+spigot/
