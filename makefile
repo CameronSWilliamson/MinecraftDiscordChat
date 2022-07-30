@@ -1,8 +1,6 @@
-mv:
-	bash ./move_file.sh
+compile:
+	gradle shadowJar
 
-cmpmv: compile mv
-=======
 clean:
 	gradle clean
 
