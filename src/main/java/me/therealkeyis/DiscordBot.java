@@ -9,6 +9,7 @@ import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.user.User;
 
+import java.util.logging.Logger;
 import java.util.Optional;
 
 /**
@@ -18,8 +19,9 @@ public class DiscordBot {
     private static DiscordBot instance = null;
     private static String TOKEN = null;
     private static Long CHAT_CHANNEL = null;
+    private static Logger log;
     private Integer activePlayerCount = 0;
-    DiscordApi client;
+    private DiscordApi client;
 
     /**
      * Builds an active DiscordClient.
@@ -27,12 +29,14 @@ public class DiscordBot {
     private DiscordBot() {
         client = new DiscordApiBuilder().setToken(TOKEN).login().join();
         client.addMessageCreateListener(event -> {
+            DiscordBot.log.info("Recieved message");
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
             TextChannel channel = event.getChannel();
             if (channel.getId() == CHAT_CHANNEL) {
-                Bukkit.broadcastMessage("<"+event.getMessageAuthor().getDisplayName()+"> "+event.getMessageContent());
+                Bukkit.broadcastMessage(
+                        "<" + event.getMessageAuthor().getDisplayName() + "> " + event.getMessageContent());
             }
         });
         updateActivePlayerCount();
@@ -72,12 +76,15 @@ public class DiscordBot {
      * Configures variables required for discord interaction.
      *
      * @param discord_token The token of the Discord Bot
-     * @param chat_channel The channel to send messages to
-     * @throws NumberFormatException Thrown when chat_channel cannot be turned into a long
+     * @param chat_channel  The channel to send messages to
+     * @throws NumberFormatException Thrown when chat_channel cannot be turned into
+     *                               a long
      */
-    public static void configureInstance(String discord_token, String chat_channel) throws NumberFormatException {
+    public static void configureInstance(String discord_token, String chat_channel, Logger log)
+            throws NumberFormatException {
         DiscordBot.TOKEN = discord_token;
         DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
+        DiscordBot.log = log;
     }
 
     public void increaseActivePlayerCount() {
