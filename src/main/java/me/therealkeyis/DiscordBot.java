@@ -6,6 +6,7 @@ import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
+import org.javacord.api.entity.intent.Intent;
 import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.user.User;
 
@@ -27,19 +28,25 @@ public class DiscordBot {
      * Builds an active DiscordClient.
      */
     private DiscordBot() {
-        client = new DiscordApiBuilder().setToken(TOKEN).login().join();
+        client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES)
+                .login().join();
+
         client.addMessageCreateListener(event -> {
-            DiscordBot.log.info("Recieved message");
+            DiscordBot.log.info("Recieved message in chat room " +
+                    event.getChannel().getId() + " Looking for channel "
+                    + CHAT_CHANNEL + " this is the message " + event.getMessageContent());
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
-            TextChannel channel = event.getChannel();
-            if (channel.getId() == CHAT_CHANNEL) {
+            if (event.getChannel().getId() == CHAT_CHANNEL) {
                 Bukkit.broadcastMessage(
-                        "<" + event.getMessageAuthor().getDisplayName() + "> " + event.getMessageContent());
+                        "<" + event.getMessageAuthor().getDisplayName() + "> " +
+                                event.getMessageContent());
             }
         });
+
         updateActivePlayerCount();
+
     }
 
     /**
