@@ -8,3 +8,4 @@ cd ..
 echo eula=true >> eula.txt
 rm -rf build
 cd ..
+mkdir spigot/plugins
