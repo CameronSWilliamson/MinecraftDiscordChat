@@ -9,12 +9,12 @@ compile:
 
 clean:
 	gradle clean
+	rm -rf spigot
 
-setup:
+spigot:
 	bash ./setup_env.sh
-	bash ./run_server.sh
 
-run: compile
+run: spigot compile
 	cp build/libs/* spigot/plugins/
 	bash run_server.sh
 

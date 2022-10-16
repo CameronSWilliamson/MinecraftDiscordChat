@@ -60,8 +60,6 @@ public class Sqlite {
     public boolean writeLocationToChannel(String vc, double x1, double z1, double x2, double z2) {
         var insertStmt = "INSERT INTO Locations (discord_vc, x1, z1, x2, z2) values (?, ?, ?, ?, ?);";
         try (var prep = con.prepareStatement(insertStmt)) {
-            // prep.setString(1, Integer.toString(num));
-            // num++;
             prep.setString(1, vc);
             prep.setDouble(2, x1);
             prep.setDouble(3, z1);
@@ -87,5 +85,79 @@ public class Sqlite {
             return false;
         }
         return true;
+    }
+
+    public String getGuildFromMCUser(String mcUsername) {
+        var selectStmt = "SELECT guild FROM McToDiscord where minecraft = ?";
+
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, mcUsername);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
+
+    public String getDiscordFromUser(String mcUsername) {
+        var selectStmt = "SELECT discord FROM McToDiscord where minecraft = ?";
+
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, mcUsername);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
+
+    public String getChannelIdFromName(String name) {
+        var selectStmt = "SELECT discord_vc FROM LocationToId where vc_id = ?";
+
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, name);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
+
+    public String getPossiblePositions(LocationPair currentLocation) {
+        var selectStmt = "SELECT * from Locations";
+        try (var stmt = con.createStatement()) {
+            var rs = stmt.executeQuery(selectStmt);
+            while (rs.next()) {
+                // if currentLocation.x
+                var name = rs.getString(1);
+                var x1 = rs.getDouble(2);
+                var z1 = rs.getDouble(3);
+                var x2 = rs.getDouble(4);
+                var z2 = rs.getDouble(5);
+                boolean res = ((currentLocation.x < x1 && currentLocation.x > x2)
+                        || (currentLocation.x > x1 && currentLocation.x < x2)) &&
+                        ((currentLocation.z < z1 && currentLocation.z > z2)
+                                || (currentLocation.z > z1 && currentLocation.z < z2));
+                if (res)
+                    return name;
+                // if (currentLocation.x < x1 && currentLocation.x > x2)
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
     }
 }

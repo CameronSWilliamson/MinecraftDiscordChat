@@ -30,7 +30,7 @@ public class MinecraftPlugin extends JavaPlugin {
         defaultConfig();
         try {
             DiscordBot.configureInstance(config.getString("discord_token"), config.getString("discord_channel"),
-                    getLogger());
+                    getConfig().getString("discord_voice"), getLogger());
         } catch (NumberFormatException ex) {
             getLogger().warning("Unable to parse channel string, did you forget to set it? Disabling chat listener.");
             return;

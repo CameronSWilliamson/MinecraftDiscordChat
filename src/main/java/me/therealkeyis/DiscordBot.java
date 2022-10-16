@@ -5,6 +5,7 @@ import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.activity.ActivityType;
 import org.javacord.api.entity.channel.Channel;
+import org.javacord.api.entity.channel.ServerVoiceChannel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.intent.Intent;
 import org.javacord.api.entity.message.MessageBuilder;
@@ -12,6 +13,7 @@ import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 
 import java.util.logging.Logger;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -23,21 +25,23 @@ public class DiscordBot {
     private static String TOKEN = null;
     private static Long CHAT_CHANNEL = null;
     private static Logger log;
+    private static String VOICE_CHANNEL = null;
     private Integer activePlayerCount = 0;
     private DiscordApi client;
+
+    private HashMap<String, String> playerToChannel;
 
     /**
      * Builds an active DiscordClient.
      */
     private DiscordBot() {
+        playerToChannel = new HashMap<>();
         client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES)
                 .setIntents(Intent.GUILD_MEMBERS)
                 .login().join();
+        log.info("Connected to discord");
 
         client.addMessageCreateListener(event -> {
-            DiscordBot.log.info("Recieved message in chat room " +
-                    event.getChannel().getId() + " Looking for channel "
-                    + CHAT_CHANNEL + " this is the message " + event.getMessageContent());
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
@@ -116,11 +120,35 @@ public class DiscordBot {
      * @throws NumberFormatException Thrown when chat_channel cannot be turned into
      *                               a long
      */
-    public static void configureInstance(String discord_token, String chat_channel, Logger log)
+    public static void configureInstance(String discord_token, String chat_channel, String default_voice, Logger log)
             throws NumberFormatException {
         DiscordBot.TOKEN = discord_token;
+        DiscordBot.VOICE_CHANNEL = default_voice;
         DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
         DiscordBot.log = log;
+    }
+
+    public void movePlayer(String name, String channelId) {
+        if (playerToChannel.containsKey(name))
+            if (playerToChannel.get(name).equals(channelId))
+                return;
+        var channelOpt = client.getChannelById(channelId);
+        if (!channelOpt.isPresent()) {
+            log.info("channel doesnt exist");
+            return;
+        }
+        var channel = (ServerVoiceChannel) channelOpt.get();
+        var userOpt = client.getCachedUserByDiscriminatedName(name);
+        if (!userOpt.isPresent()) {
+            log.info("Player doesnt exist");
+            return;
+        }
+        playerToChannel.put(name, channelId);
+        userOpt.get().move(channel);
+    }
+
+    public void movePlayerDefault(String name) {
+        movePlayer(name, VOICE_CHANNEL);
     }
 
     public void increaseActivePlayerCount() {

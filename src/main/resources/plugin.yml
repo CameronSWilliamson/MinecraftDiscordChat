@@ -9,3 +9,6 @@ commands:
   link:
     description: Links a minecraft account to a discord account
     usage: /link <discord username>
+  voicearea:
+    description: Gives user a stick to create a location for a voice chat
+    usage: /voicearea <area name>
