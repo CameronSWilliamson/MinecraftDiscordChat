@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Handles communications to and from the discord api
+ * Singleton that handles communications to and from the discord api
  */
 public class DiscordBot {
     private static DiscordBot instance = null;
@@ -35,12 +35,12 @@ public class DiscordBot {
      */
     private DiscordBot() {
         playerToChannel = new HashMap<>();
-        client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES)
-                .setIntents(Intent.GUILD_MEMBERS)
-                .login().join();
+        client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES, Intent.GUILD_MEMBERS).login()
+                .join();
         log.info("Connected to discord");
 
         client.addMessageCreateListener(event -> {
+            log.info("Recieved Message");
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
@@ -68,6 +68,12 @@ public class DiscordBot {
         }
     }
 
+    /**
+     * Sends a message to the developer on discord
+     * 
+     * @param requestUser The user sending the message
+     * @param content     The content in the message
+     */
     public void messageDev(String requestUser, String content) {
         User user = client.getUserById(153353058514894848L).join();
         user.sendMessage(requestUser + ": " + content);
@@ -88,6 +94,12 @@ public class DiscordBot {
         }
     }
 
+    /**
+     * Gets the guild id from a discord username with id
+     * 
+     * @param usernameWithId The discord username with an id
+     * @return A discord guild id as a string
+     */
     public String getGuild(String usernameWithId) {
         var userOptional = client.getCachedUserByDiscriminatedName(usernameWithId);
         if (!userOptional.isPresent()) {
@@ -126,6 +138,12 @@ public class DiscordBot {
         DiscordBot.log = log;
     }
 
+    /**
+     * Moves a player from one voice chat to another
+     * 
+     * @param name      The username of the player to move
+     * @param channelId The channel id of the channel to move them to
+     */
     public void movePlayer(String name, String channelId) {
         if (playerToChannel.containsKey(name))
             if (playerToChannel.get(name).equals(channelId))
@@ -143,15 +161,26 @@ public class DiscordBot {
         userOpt.get().move(channel);
     }
 
+    /**
+     * Moves a player to the default voice channel
+     * 
+     * @param name The name of the player to move
+     */
     public void movePlayerDefault(String name) {
         movePlayer(name, VOICE_CHANNEL);
     }
 
+    /**
+     * Increases the active player count for the discord status
+     */
     public void increaseActivePlayerCount() {
         activePlayerCount += 1;
         updateActivePlayerCount();
     }
 
+    /**
+     * 
+     */
     public void decreaseActivePlayerCount() {
         activePlayerCount -= 1;
         updateActivePlayerCount();
