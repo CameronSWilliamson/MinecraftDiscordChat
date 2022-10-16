@@ -1,7 +1,7 @@
 .PHONY=clean
 .PHONY=compile
 
-build/libs/MinecraftDiscordChat.jar: src/java/
+build/libs/MinecraftDiscordChat.jar:
 	gradle shadowJar
 
 compile:
