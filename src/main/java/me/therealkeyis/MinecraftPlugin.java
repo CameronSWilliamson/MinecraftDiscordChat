@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.therealkeyis.mcCommands.Link;
 import me.therealkeyis.mcCommands.Request;
+import me.therealkeyis.mcCommands.VoiceArea;
 
 import java.util.Objects;
 
@@ -36,8 +37,10 @@ public class MinecraftPlugin extends JavaPlugin {
         }
         bot = DiscordBot.getInstance();
         getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
+        getServer().getPluginManager().registerEvents(new UserListener(getLogger(), sqlite), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
         Objects.requireNonNull(getCommand("link")).setExecutor(new Link(sqlite, getLogger()));
+        Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this));
     }
 
     private void defaultConfig() {

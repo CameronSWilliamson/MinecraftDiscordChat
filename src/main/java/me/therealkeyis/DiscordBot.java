@@ -8,10 +8,12 @@ import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.intent.Intent;
 import org.javacord.api.entity.message.MessageBuilder;
+import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 
 import java.util.logging.Logger;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Handles communications to and from the discord api
@@ -29,6 +31,7 @@ public class DiscordBot {
      */
     private DiscordBot() {
         client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES)
+                .setIntents(Intent.GUILD_MEMBERS)
                 .login().join();
 
         client.addMessageCreateListener(event -> {
@@ -65,6 +68,32 @@ public class DiscordBot {
     public void messageDev(String requestUser, String content) {
         User user = client.getUserById(153353058514894848L).join();
         user.sendMessage(requestUser + ": " + content);
+    }
+
+    public String createChannel(String channelName, String serverId) {
+        var serverOpt = client.getServerById(serverId);
+        if (!serverOpt.isPresent())
+            return "";
+        var server = serverOpt.get();
+        var builder = server.createVoiceChannelBuilder();
+        builder.setName(channelName);
+        try {
+            return builder.create().get().getIdAsString();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getGuild(String usernameWithId) {
+        var userOptional = client.getCachedUserByDiscriminatedName(usernameWithId);
+        if (!userOptional.isPresent()) {
+            log.info("Unable to find userOptional");
+            return "";
+        }
+        var user = userOptional.get();
+        var server = (Server) user.getMutualServers().toArray()[0];
+        return server.getIdAsString();
     }
 
     /**
