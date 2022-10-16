@@ -17,7 +17,6 @@ import java.util.Objects;
 public class MinecraftPlugin extends JavaPlugin {
     DiscordBot bot;
     FileConfiguration config = this.getConfig();
-    Sqlite sqlite;
 
     /**
      * Handles initialization of the plugin
@@ -26,7 +25,7 @@ public class MinecraftPlugin extends JavaPlugin {
      */
     @Override
     public void onEnable() {
-        sqlite = new Sqlite(getDataFolder().getAbsolutePath(), getLogger());
+        Sqlite.configureInstance(getDataFolder().getAbsolutePath(), getLogger());
         defaultConfig();
         try {
             DiscordBot.configureInstance(config.getString("discord_token"), config.getString("discord_channel"),
@@ -37,15 +36,16 @@ public class MinecraftPlugin extends JavaPlugin {
         }
         bot = DiscordBot.getInstance();
         getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
-        getServer().getPluginManager().registerEvents(new UserListener(getLogger(), sqlite), this);
+        getServer().getPluginManager().registerEvents(new UserListener(getLogger()), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
-        Objects.requireNonNull(getCommand("link")).setExecutor(new Link(sqlite, getLogger()));
+        Objects.requireNonNull(getCommand("link")).setExecutor(new Link(getLogger()));
         Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this));
     }
 
     private void defaultConfig() {
         config.addDefault("discord_token", "Your Discord Bot Token");
         config.addDefault("discord_channel", "Your Discord Channel Token");
+        config.addDefault("discord_voice", "Your default Discord Voice Channel id");
         saveDefaultConfig();
     }
 
