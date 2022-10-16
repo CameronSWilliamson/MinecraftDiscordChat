@@ -4,10 +4,29 @@ package me.therealkeyis;
  * A database location entry
  */
 public class LocationEntry {
+    /**
+     * The name of the voice channel for the location
+     */
     public String vc;
+
+    /**
+     * The x value for the first corner selected
+     */
     public double x1;
+
+    /**
+     * The x value for the second corner selected
+     */
     public double x2;
+
+    /**
+     * The z value for the first corner selected
+     */
     public double z1;
+
+    /**
+     * The z value for the second corner selected
+     */
     public double z2;
 
     /**

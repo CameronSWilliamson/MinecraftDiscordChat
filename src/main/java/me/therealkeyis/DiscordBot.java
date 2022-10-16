@@ -21,13 +21,44 @@ import java.util.concurrent.ExecutionException;
  * Singleton that handles communications to and from the discord api
  */
 public class DiscordBot {
+    /**
+     * The global DiscordBot instance
+     */
     private static DiscordBot instance = null;
+
+    /**
+     * The token for the discord bot to connect to the discord API
+     */
     private static String TOKEN = null;
+
+    /**
+     * The default messaging channel
+     */
     private static Long CHAT_CHANNEL = null;
+
+    /**
+     * The plugin logger
+     */
     private static Logger log;
+
+    /**
+     * The default voice channel
+     */
     private static String VOICE_CHANNEL = null;
+
+    /**
+     * The active player count on the server
+     */
     private Integer activePlayerCount = 0;
+
+    /**
+     * The discord api library object
+     */
     private DiscordApi client;
+
+    /**
+     * A mapping of player to voice channel
+     */
     private HashMap<String, String> playerToChannel;
 
     /**
@@ -40,7 +71,6 @@ public class DiscordBot {
         log.info("Connected to discord");
 
         client.addMessageCreateListener(event -> {
-            log.info("Recieved Message");
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
@@ -79,6 +109,14 @@ public class DiscordBot {
         user.sendMessage(requestUser + ": " + content);
     }
 
+    /**
+     * Creates a discord voice channel with the provided channelName on the
+     * server with the associated serverId
+     * 
+     * @param channelName The name of the new channel
+     * @param serverId    The server id of the server to create the channel
+     * @return Returns the channelId of the new channel
+     */
     public String createChannel(String channelName, String serverId) {
         var serverOpt = client.getServerById(serverId);
         if (!serverOpt.isPresent())
@@ -127,6 +165,8 @@ public class DiscordBot {
      *
      * @param discord_token The token of the Discord Bot
      * @param chat_channel  The channel to send messages to
+     * @param default_voice The default voice channel
+     * @param log           The plugin logger
      * @throws NumberFormatException Thrown when chat_channel cannot be turned into
      *                               a long
      */
@@ -179,13 +219,16 @@ public class DiscordBot {
     }
 
     /**
-     * 
+     * Decreases the active player count for the discord status
      */
     public void decreaseActivePlayerCount() {
         activePlayerCount -= 1;
         updateActivePlayerCount();
     }
 
+    /**
+     * Updates the active player count on the server
+     */
     private void updateActivePlayerCount() {
         client.updateActivity(ActivityType.WATCHING, activePlayerCount + " players");
     }
