@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+/**
+ * Singleton that handles all SQL interactions
+ */
 public class Sqlite {
     private static Sqlite instance;
     private static String path;
@@ -21,6 +24,9 @@ public class Sqlite {
         }
     }
 
+    /**
+     * Creates all tables in the sqlite3 database
+     */
     private void createTables() {
         var createUserMap = "CREATE TABLE IF NOT EXISTS McToDiscord (discord TEXT, minecraft TEXT, guild TEXT, PRIMARY KEY (discord, minecraft));";
         var createLocation = "CREATE TABLE IF NOT EXISTS Locations (discord_vc TEXT, x1 double, z1 double, x2 double, z2 double, PRIMARY KEY (discord_vc));";
@@ -38,6 +44,14 @@ public class Sqlite {
         }
     }
 
+    /**
+     * Links minecraft and discord usernames
+     * 
+     * @param discord   A user's discord username
+     * @param minecraft A user's minecraft username
+     * @param guild     The guild they share with the bot
+     * @return
+     */
     public boolean linkUsernames(String discord, String minecraft, String guild) {
         var insertStmt = "INSERT INTO McToDiscord (discord, minecraft, guild) values (?, ?, ?)";
         try (var prep = con.prepareStatement(insertStmt)) {
@@ -52,6 +66,16 @@ public class Sqlite {
         return true;
     }
 
+    /**
+     * Binds a location in the minecraft world to
+     * 
+     * @param vc
+     * @param x1
+     * @param z1
+     * @param x2
+     * @param z2
+     * @return
+     */
     public boolean writeLocationToChannel(String vc, double x1, double z1, double x2, double z2) {
         var insertStmt = "INSERT INTO Locations (discord_vc, x1, z1, x2, z2) values (?, ?, ?, ?, ?);";
         try (var prep = con.prepareStatement(insertStmt)) {
@@ -61,7 +85,6 @@ public class Sqlite {
             prep.setDouble(4, x2);
             prep.setDouble(5, z2);
             prep.executeUpdate();
-            log.info("writing " + vc + " to database");
         } catch (SQLException e) {
             log.warning(e.toString());
             return false;

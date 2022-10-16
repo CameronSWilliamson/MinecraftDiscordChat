@@ -35,6 +35,13 @@ public class MinecraftPlugin extends JavaPlugin {
             return;
         }
         bot = DiscordBot.getInstance();
+        registerEvents();
+    }
+
+    /**
+     * Registers all event listeners and command executors for the plugin
+     */
+    private void registerEvents() {
         getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
         getServer().getPluginManager().registerEvents(new UserListener(getLogger()), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
@@ -42,6 +49,10 @@ public class MinecraftPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this));
     }
 
+    /**
+     * Creates the default configuration file if there is no configuration file in
+     * <server>/plugins/MinecraftDiscordChat
+     */
     private void defaultConfig() {
         config.addDefault("discord_token", "Your Discord Bot Token");
         config.addDefault("discord_channel", "Your Discord Channel Token");
