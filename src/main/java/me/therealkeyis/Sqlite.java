@@ -50,7 +50,7 @@ public class Sqlite {
      * @param discord   A user's discord username
      * @param minecraft A user's minecraft username
      * @param guild     The guild they share with the bot
-     * @return
+     * @return Returns true if successful, false otherwise
      */
     public boolean linkUsernames(String discord, String minecraft, String guild) {
         var insertStmt = "INSERT INTO McToDiscord (discord, minecraft, guild) values (?, ?, ?)";
@@ -69,12 +69,12 @@ public class Sqlite {
     /**
      * Binds a location in the minecraft world to
      * 
-     * @param vc
-     * @param x1
-     * @param z1
-     * @param x2
-     * @param z2
-     * @return
+     * @param vc The name of the voice channel
+     * @param x1 The first x position
+     * @param z1 The first z position
+     * @param x2 The second x position
+     * @param z2 The second z position
+     * @return True of successful, false otherwise
      */
     public boolean writeLocationToChannel(String vc, double x1, double z1, double x2, double z2) {
         var insertStmt = "INSERT INTO Locations (discord_vc, x1, z1, x2, z2) values (?, ?, ?, ?, ?);";
@@ -92,6 +92,13 @@ public class Sqlite {
         return true;
     }
 
+    /**
+     * Links an area name with a discord channel id
+     * 
+     * @param vc_name    The name of the location / voice chat
+     * @param channel_id The discord id for the voice channel
+     * @return True if successful, false otherwise
+     */
     public boolean createChannel(String vc_name, String channel_id) {
         var insertStmt = "INSERT INTO LocationToId (vc_id, discord_vc) VALUES (?, ?)";
         try (var prep = con.prepareStatement(insertStmt)) {
@@ -105,6 +112,12 @@ public class Sqlite {
         return true;
     }
 
+    /**
+     * Gets the guild associated with the provided minecraft username
+     * 
+     * @param mcUsername A player's minecraft username
+     * @return The guild id for the server the player is in. Empty string if none
+     */
     public String getGuildFromMCUser(String mcUsername) {
         var selectStmt = "SELECT guild FROM McToDiscord where minecraft = ?";
 
@@ -121,6 +134,12 @@ public class Sqlite {
         return "";
     }
 
+    /**
+     * Gets a user's discord name and number using their minecraft username
+     * 
+     * @param mcUsername A player's minecraft username
+     * @return The name#number of a user or empty string if DNE
+     */
     public String getDiscordFromUser(String mcUsername) {
         var selectStmt = "SELECT discord FROM McToDiscord where minecraft = ?";
 
@@ -137,6 +156,12 @@ public class Sqlite {
         return "";
     }
 
+    /**
+     * Gets a channel id given the channel name
+     * 
+     * @param name The name of the channel
+     * @return The channel id or empty string if DNE
+     */
     public String getChannelIdFromName(String name) {
         var selectStmt = "SELECT discord_vc FROM LocationToId where vc_id = ?";
 
@@ -153,6 +178,14 @@ public class Sqlite {
         return "";
     }
 
+    /**
+     * Gets all of the possible positions and compares them with
+     * the current location. Returns the name of the location if
+     * current location is within that area.
+     * 
+     * @param currentLocation A player's current position
+     * @return The name of the position the player is in, empty string if none match
+     */
     public String getPossiblePositions(LocationPair currentLocation) {
         var selectStmt = "SELECT * from Locations";
         try (var stmt = con.createStatement()) {
@@ -179,11 +212,22 @@ public class Sqlite {
         return "";
     }
 
+    /**
+     * Configures the path and the logger for the global Sqlite instance
+     * 
+     * @param path The path of the data directory
+     * @param log  The plugin logger
+     */
     public static void configureInstance(String path, Logger log) {
         Sqlite.log = log;
         Sqlite.path = path;
     }
 
+    /**
+     * Gets the global Sqlite instance
+     * 
+     * @return an sqlite instance
+     */
     public static Sqlite getInstance() {
         if (instance == null)
             instance = new Sqlite();
