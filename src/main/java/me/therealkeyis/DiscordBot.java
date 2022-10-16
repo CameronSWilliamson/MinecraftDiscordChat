@@ -28,7 +28,6 @@ public class DiscordBot {
     private static String VOICE_CHANNEL = null;
     private Integer activePlayerCount = 0;
     private DiscordApi client;
-
     private HashMap<String, String> playerToChannel;
 
     /**

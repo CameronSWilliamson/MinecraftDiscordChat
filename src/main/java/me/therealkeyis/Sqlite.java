@@ -6,23 +6,18 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class Sqlite {
-    private final String path;
+    private static Sqlite instance;
+    private static String path;
+    private static Logger log;
     private Connection con;
-    private final Logger log;
 
-    public Sqlite(String folderPath, Logger log) {
-        this.log = log;
-        path = folderPath + "/mcdc.sqlite3";
-
-        var url = "jdbc:sqlite:" + path;
+    private Sqlite() {
         try {
-            con = DriverManager.getConnection(url);
-            if (con != null) {
-                log.info("Connected to database");
-            }
+            con = DriverManager.getConnection("jdbc:sqlite:" + path);
+            log.info("Connected to database");
             createTables();
         } catch (SQLException e) {
-            log.warning("Unable to connect to sqlite3 database");
+            log.warning("Unable to connect to database");
         }
     }
 
@@ -159,5 +154,17 @@ public class Sqlite {
             return "";
         }
         return "";
+    }
+
+    public static void configureInstance(String path, Logger log) {
+        Sqlite.log = log;
+        Sqlite.path = path;
+    }
+
+    public static Sqlite getInstance() {
+        if (instance == null)
+            instance = new Sqlite();
+
+        return instance;
     }
 }

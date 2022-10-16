@@ -14,8 +14,8 @@ public class Link implements CommandExecutor {
     Sqlite sqlite;
     Logger log;
 
-    public Link(Sqlite sqlite, Logger logger) {
-        this.sqlite = sqlite;
+    public Link(Logger logger) {
+        this.sqlite = Sqlite.getInstance();
         this.log = logger;
     }
 
