@@ -91,7 +91,6 @@ public class DiscordBot {
     public String getGuild(String usernameWithId) {
         var userOptional = client.getCachedUserByDiscriminatedName(usernameWithId);
         if (!userOptional.isPresent()) {
-            log.info("Unable to find userOptional");
             return "";
         }
         var user = userOptional.get();
@@ -133,13 +132,11 @@ public class DiscordBot {
                 return;
         var channelOpt = client.getChannelById(channelId);
         if (!channelOpt.isPresent()) {
-            log.info("channel doesnt exist");
             return;
         }
         var channel = (ServerVoiceChannel) channelOpt.get();
         var userOpt = client.getCachedUserByDiscriminatedName(name);
         if (!userOpt.isPresent()) {
-            log.info("Player doesnt exist");
             return;
         }
         playerToChannel.put(name, channelId);
