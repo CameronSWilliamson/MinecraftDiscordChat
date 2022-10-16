@@ -14,15 +14,38 @@ import org.bukkit.persistence.PersistentDataType;
 
 import me.therealkeyis.mcCommands.VoiceArea;
 
+/**
+ * Listens to player movements and uses player movements to
+ * coordinate discord voice channels
+ */
 public class UserListener implements Listener {
-    Logger log;
+    /**
+     * Logger for the plugin
+     */
+    private Logger log;
+
+    /**
+     * A sqlite connection
+     */
     Sqlite sqlite;
 
+    /**
+     * Creates a new UserListener
+     * 
+     * @param log a plugin logger
+     */
     public UserListener(Logger log) {
         this.log = log;
         this.sqlite = Sqlite.getInstance();
     }
 
+    /**
+     * When a player uses (right /left click) an item this event handler
+     * is called. This event handler controls the configuration of
+     * voice chat zones.
+     * 
+     * @param event The player use event
+     */
     @EventHandler
     public void onPlayerUse(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND)
@@ -34,6 +57,12 @@ public class UserListener implements Listener {
         processItem(inv, new LocationPair(event), p.getDisplayName());
     }
 
+    /**
+     * When a player moves this event handler is called. This controls
+     * the moving of players between voice channels.
+     * 
+     * @param event The movement event
+     */
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         var location = event.getTo();
@@ -47,6 +76,15 @@ public class UserListener implements Listener {
         }
     }
 
+    /**
+     * Changes metadata information for the item a player is holding if the
+     * item is a stick and the name of the stick contains VoiceArea.ItemName.
+     * This helps with keeping track of the number of times the item was used.
+     * 
+     * @param inventory  The inventory of a player
+     * @param local      The location the player clicked
+     * @param playerName The name of the player who clicked
+     */
     private void processItem(PlayerInventory inventory, LocationPair local, String playerName) {
         var item = inventory.getItemInMainHand();
         if (item.getType() != Material.STICK)
