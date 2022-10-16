@@ -1,2 +1,3 @@
 discord_token: "Your Discord Bot Token"
 discord_channel: "Your Discord Channel Token"
+discord_voice: "Default voice channel"

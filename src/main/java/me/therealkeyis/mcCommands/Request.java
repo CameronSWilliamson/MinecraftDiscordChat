@@ -1,4 +1,4 @@
-package me.therealkeyis.commands;
+package me.therealkeyis.mcCommands;
 
 import me.therealkeyis.DiscordBot;
 import org.bukkit.command.Command;

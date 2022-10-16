@@ -1,15 +1,21 @@
+.PHONY=clean
+.PHONY=compile
+
+build/libs/MinecraftDiscordChat.jar: src/java/
+	gradle shadowJar
+
 compile:
 	gradle shadowJar
 
 clean:
 	gradle clean
+	rm -rf spigot
 
-setup:
+spigot:
 	bash ./setup_env.sh
-	bash run_server.sh
 
-run: clean compile
-	mv build/libs/* spigot/plugins/
+run: spigot compile
+	cp build/libs/* spigot/plugins/
 	bash run_server.sh
 
 doc:

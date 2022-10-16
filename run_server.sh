@@ -1,4 +1,4 @@
 #!/bin/bash
 cd spigot
-java -jar spigot-1.19.jar nogui
+java -jar spigot-*.jar nogui
 cd ..
