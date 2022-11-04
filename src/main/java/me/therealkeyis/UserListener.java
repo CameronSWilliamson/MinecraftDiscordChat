@@ -13,6 +13,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 import me.therealkeyis.mcCommands.VoiceArea;
+import me.therealkeyis.models.LocationEntry;
+import me.therealkeyis.models.LocationPair;
 
 /**
  * Listens to player movements and uses player movements to
@@ -27,7 +29,7 @@ public class UserListener implements Listener {
     /**
      * A sqlite connection
      */
-    Sqlite sqlite;
+    Cache cache;
 
     /**
      * Creates a new UserListener
@@ -36,7 +38,7 @@ public class UserListener implements Listener {
      */
     public UserListener(Logger log) {
         this.log = log;
-        this.sqlite = Sqlite.getInstance();
+        this.cache = Cache.getInstance();
     }
 
     /**
@@ -66,13 +68,15 @@ public class UserListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         var location = event.getTo();
-        var newChannel = sqlite.getPossiblePositions(new LocationPair(location.getX(), location.getZ()));
-        var playerDiscordName = sqlite.getDiscordFromUser(event.getPlayer().getDisplayName());
-        if (newChannel.length() > 0) {
-            var channelId = sqlite.getChannelIdFromName(newChannel);
-            DiscordBot.getInstance().movePlayer(playerDiscordName, channelId);
-        } else {
-            DiscordBot.getInstance().movePlayerDefault(playerDiscordName);
+        var locationEntry = cache.getEntryBetween(new LocationPair(location.getX(), location.getZ()));
+        var discordName = cache.getDiscordUsername(event.getPlayer().getDisplayName());
+        if (discordName.length() > 0) {
+            if (locationEntry != null) {
+                var channelId = cache.getChannelId(locationEntry.locationName);
+                DiscordBot.getInstance().movePlayer(discordName, channelId);
+            } else {
+                DiscordBot.getInstance().movePlayerDefault(discordName);
+            }
         }
     }
 
@@ -109,10 +113,16 @@ public class UserListener implements Listener {
             double x1 = dataContainer.get(VoiceArea.x1, PersistentDataType.DOUBLE);
             double z1 = dataContainer.get(VoiceArea.z1, PersistentDataType.DOUBLE);
             var channelName = item.getItemMeta().getDisplayName().replace(VoiceArea.ItemName + " ", "");
-            sqlite.writeLocationToChannel(channelName, x1,
-                    z1, local.x, local.z);
-            var channel = DiscordBot.getInstance().createChannel(channelName, sqlite.getGuildFromMCUser(playerName));
-            sqlite.createChannel(channelName, channel);
+            if (channelName.length() != 0) {
+                cache.writeNewLocationEntry(new LocationEntry(channelName, x1, z1, local.x, local.z));
+                log.info(channelName);
+                log.info(cache.getGuildId(playerName));
+                var channel = DiscordBot.getInstance().createChannel(channelName, cache.getGuildId(playerName));
+                log.info(channel);
+                cache.writeNewChannelEntry(channelName, channel);
+            } else {
+                log.info("No channel name provided");
+            }
             inventory.remove(item);
         }
     }
