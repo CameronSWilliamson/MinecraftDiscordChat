@@ -93,11 +93,6 @@ public class DiscordBot {
     public void sendMessage(String content) {
         client.getChannelById(CHAT_CHANNEL)
                 .ifPresent(channel -> channel.asTextChannel().ifPresent(text -> text.sendMessage(content)));
-        Optional<Channel> channel_opt = client.getChannelById(CHAT_CHANNEL);
-        if (channel_opt.isPresent()) {
-            Optional<TextChannel> txt_channel_opt = channel_opt.get().asTextChannel();
-            txt_channel_opt.ifPresent(textChannel -> new MessageBuilder().append(content).send(textChannel));
-        }
     }
 
     /**
