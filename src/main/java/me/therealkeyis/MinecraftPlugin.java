@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.therealkeyis.mcCommands.Link;
 import me.therealkeyis.mcCommands.Request;
 import me.therealkeyis.mcCommands.VoiceArea;
+import me.therealkeyis.models.DiscordConfig;
 
 import java.util.Objects;
 
@@ -27,13 +28,7 @@ public class MinecraftPlugin extends JavaPlugin {
     public void onEnable() {
         Sqlite.configureInstance(getDataFolder().getAbsolutePath(), getLogger());
         defaultConfig();
-        try {
-            DiscordBot.configureInstance(config.getString("discord_token"), config.getString("discord_channel"),
-                    getConfig().getString("discord_voice"), getLogger());
-        } catch (NumberFormatException ex) {
-            getLogger().warning("Unable to parse channel string, did you forget to set it? Disabling chat listener.");
-            return;
-        }
+        DiscordBot.configureInstance(new DiscordConfig(config, getLogger()));
         bot = DiscordBot.getInstance();
         registerEvents();
     }
@@ -57,6 +52,7 @@ public class MinecraftPlugin extends JavaPlugin {
         config.addDefault("discord_token", "Your Discord Bot Token");
         config.addDefault("discord_channel", "Your Discord Channel Token");
         config.addDefault("discord_voice", "Your default Discord Voice Channel id");
+        config.addDefault("discord_category", "Minecraft Voice");
         saveDefaultConfig();
     }
 
@@ -66,5 +62,6 @@ public class MinecraftPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called!");
+        bot.disconnect();
     }
 }
