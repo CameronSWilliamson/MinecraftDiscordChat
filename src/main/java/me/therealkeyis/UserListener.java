@@ -36,13 +36,16 @@ public class UserListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        log.info("Player moved");
         var location = event.getTo();
         var newChannel = sqlite.getPossiblePositions(new LocationPair(location.getX(), location.getZ()));
         var playerDiscordName = sqlite.getDiscordFromUser(event.getPlayer().getDisplayName());
         if (newChannel.length() > 0) {
+            log.info("Moving to " + newChannel);
             var channelId = sqlite.getChannelIdFromName(newChannel);
             DiscordBot.getInstance().movePlayer(playerDiscordName, channelId);
         } else {
+            log.info("Moving to default");
             DiscordBot.getInstance().movePlayerDefault(playerDiscordName);
         }
     }
@@ -62,6 +65,7 @@ public class UserListener implements Listener {
             counts = dataContainer.get(VoiceArea.use_count, PersistentDataType.INTEGER);
         else
             return;
+        log.info("Reading counts as " + counts);
         if (counts == 0) {
             dataContainer.set(VoiceArea.x1, PersistentDataType.DOUBLE, local.x);
             dataContainer.set(VoiceArea.z1, PersistentDataType.DOUBLE, local.z);
