@@ -42,7 +42,7 @@ public class MinecraftPlugin extends JavaPlugin {
      * Registers all event listeners and command executors for the plugin
      */
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new McToDcListener(bot), this);
+        getServer().getPluginManager().registerEvents(new McToDcListener(bot, getLogger()), this);
         getServer().getPluginManager().registerEvents(new UserListener(getLogger()), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
         Objects.requireNonNull(getCommand("link")).setExecutor(new Link(getLogger()));
