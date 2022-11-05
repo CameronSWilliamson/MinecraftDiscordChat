@@ -46,7 +46,7 @@ public class MinecraftPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new UserListener(getLogger()), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
         Objects.requireNonNull(getCommand("link")).setExecutor(new Link(getLogger()));
-        Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this));
+        Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this, getLogger()));
     }
 
     /**
