@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function testCopy {
     if test -f $1; then
@@ -16,7 +17,5 @@ echo eula=true >> eula.txt
 rm -rf build
 cd ..
 mkdir -p spigot/plugins/MinecraftDiscordChat
-cp config.yml spigot/plugins/MinecraftDiscordChat
-
 testCopy config/config.yml spigot/plugins/MinecraftDiscordChat
 testCopy config/server.properties spigot/
