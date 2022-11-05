@@ -11,18 +11,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
  * Handles all listen interactions from the bukkit library
  */
 public class McToDcListener implements Listener {
-    /**
-     * The discord bot
-     * 
-     * This should be moved to the singleton instance
-     */
     private final DiscordBot bot;
 
-    /**
-     * Creates a Minecraft to Discord listener to watch for chat events
-     * 
-     * @param bot A discord bot (should just call the singleton instance)
-     */
     public McToDcListener(DiscordBot bot) {
         this.bot = bot;
     }
