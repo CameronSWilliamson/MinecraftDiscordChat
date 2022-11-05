@@ -12,32 +12,12 @@ import org.bukkit.persistence.PersistentDataType;
 
 import me.therealkeyis.MinecraftPlugin;
 
-/**
- * The voice area command handler
- */
 public class VoiceArea implements CommandExecutor {
-    /**
-     * The stick item name
-     */
     public static String ItemName = ChatColor.DARK_PURPLE + "AreaDefiner";
-    /**
-     * The name of the field use_count
-     */
     public static NamespacedKey use_count;
-    /**
-     * The name of the x1 field
-     */
     public static NamespacedKey x1;
-    /**
-     * The name of the z1 field
-     */
     public static NamespacedKey z1;
 
-    /**
-     * Creates a voice area opject given a MinecraftPlugin object
-     * 
-     * @param plug The minecraft plugin object
-     */
     public VoiceArea(MinecraftPlugin plug) {
         use_count = new NamespacedKey(plug, "use_count");
         x1 = new NamespacedKey(plug, "x1");
