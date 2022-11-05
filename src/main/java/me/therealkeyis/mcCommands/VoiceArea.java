@@ -1,7 +1,5 @@
 package me.therealkeyis.mcCommands;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -34,13 +32,16 @@ public class VoiceArea implements CommandExecutor {
      * The name of the z1 field
      */
     public static NamespacedKey z1;
-    private Logger log;
 
-    public VoiceArea(MinecraftPlugin plug, Logger log) {
+    /**
+     * Creates a voice area opject given a MinecraftPlugin object
+     * 
+     * @param plug The minecraft plugin object
+     */
+    public VoiceArea(MinecraftPlugin plug) {
         use_count = new NamespacedKey(plug, "use_count");
         x1 = new NamespacedKey(plug, "x1");
         z1 = new NamespacedKey(plug, "z1");
-        this.log = log;
     }
 
     @Override
@@ -52,9 +53,7 @@ public class VoiceArea implements CommandExecutor {
         var player = (Player) sender;
         var item = new ItemStack(Material.STICK, 1);
         var meta = item.getItemMeta();
-        var channelName = String.join(" ", args);
-        log.info(channelName);
-        meta.setDisplayName(ItemName + " " + channelName);
+        meta.setDisplayName(ItemName + " " + args[0]);
         meta.getPersistentDataContainer().set(use_count, PersistentDataType.INTEGER, 0);
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
