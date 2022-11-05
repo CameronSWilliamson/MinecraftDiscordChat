@@ -1,9 +1,7 @@
 package me.therealkeyis.mcCommands;
 
-import me.therealkeyis.Cache;
 import me.therealkeyis.DiscordBot;
 import me.therealkeyis.Sqlite;
-import me.therealkeyis.models.UserInfo;
 
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -35,9 +33,7 @@ public class Link implements CommandExecutor {
         if (args.length > 0) {
             var pattern = Pattern.compile("\\w+#\\d{4}");
             if (pattern.matcher(args[0]).find()) {
-                var info = new UserInfo(args[0], sender.getName(), DiscordBot.getInstance().getGuild(args[0]));
-                Cache.getInstance().writeNewUserEntry(info);
-                return true;
+                return sqlite.linkUsernames(args[0], sender.getName(), DiscordBot.getInstance().getGuild(args[0]));
             }
         }
         return false;
