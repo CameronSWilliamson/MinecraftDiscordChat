@@ -1,7 +1,5 @@
 package me.therealkeyis;
 
-import java.util.logging.Logger;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,16 +18,13 @@ public class McToDcListener implements Listener {
      */
     private final DiscordBot bot;
 
-    private final Logger log;
-
     /**
      * Creates a Minecraft to Discord listener to watch for chat events
      * 
      * @param bot A discord bot (should just call the singleton instance)
      */
-    public McToDcListener(DiscordBot bot, Logger log) {
+    public McToDcListener(DiscordBot bot) {
         this.bot = bot;
-        this.log = log;
     }
 
     /**
