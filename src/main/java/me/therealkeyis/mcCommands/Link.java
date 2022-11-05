@@ -24,6 +24,7 @@ public class Link implements CommandExecutor {
         if (args.length > 0) {
             var pattern = Pattern.compile("\\w+#\\d{4}");
             if (pattern.matcher(args[0]).find()) {
+                log.info("Writing to database");
                 return sqlite.linkUsernames(args[0], sender.getName(), DiscordBot.getInstance().getGuild(args[0]));
             }
         }
