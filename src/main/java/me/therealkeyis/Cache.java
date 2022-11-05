@@ -42,14 +42,6 @@ public class Cache {
         userInfos = db.getUserInfo();
     }
 
-    // public boolean entryBetween(LocationPair position) {
-    // for (var entry : locationEntries) {
-    // if (entry.IsBetween(position))
-    // return true;
-    // }
-    // return false;
-    // }
-
     /**
      * Checks if the provided entry is inside any of the stored
      * location entries. If so the location entry is returned

@@ -4,17 +4,16 @@ import org.bukkit.Bukkit;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.activity.ActivityType;
-import org.javacord.api.entity.channel.Channel;
 import org.javacord.api.entity.channel.ServerVoiceChannel;
-import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.intent.Intent;
-import org.javacord.api.entity.message.MessageBuilder;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 
+import me.therealkeyis.models.DiscordConfig;
+
 import java.util.logging.Logger;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -27,24 +26,14 @@ public class DiscordBot {
     private static DiscordBot instance = null;
 
     /**
-     * The token for the discord bot to connect to the discord API
-     */
-    private static String TOKEN = null;
-
-    /**
-     * The default messaging channel
-     */
-    private static Long CHAT_CHANNEL = null;
-
-    /**
      * The plugin logger
      */
     private static Logger log;
 
     /**
-     * The default voice channel
+     * The configuration for the DiscordBot Instance
      */
-    private static String VOICE_CHANNEL = null;
+    private static DiscordConfig config;
 
     /**
      * The active player count on the server
@@ -66,7 +55,8 @@ public class DiscordBot {
      */
     private DiscordBot() {
         playerToChannel = new HashMap<>();
-        client = new DiscordApiBuilder().setToken(TOKEN).setIntents(Intent.GUILD_MESSAGES, Intent.GUILD_MEMBERS).login()
+        client = new DiscordApiBuilder().setToken(config.getToken())
+                .setIntents(Intent.GUILD_MESSAGES, Intent.GUILD_MEMBERS).login()
                 .join();
         log.info("Connected to discord");
 
@@ -74,15 +64,51 @@ public class DiscordBot {
             if (event.getMessageAuthor().isBotUser()) {
                 return;
             }
-            if (event.getChannel().getId() == CHAT_CHANNEL) {
+            if (event.getChannel().getIdAsString().equals(config.getTextChannelId())) {
                 Bukkit.broadcastMessage(
                         "<" + event.getMessageAuthor().getDisplayName() + "> " +
                                 event.getMessageContent());
             }
         });
 
+        verifyCategory();
         updateActivePlayerCount();
+        migrateChannels();
+    }
 
+    /**
+     * Checks if the configured category exists. If it doesn't exist then it creates
+     * a category with the name specified in the config file.
+     */
+    private void verifyCategory() {
+        var categories = client.getChannelCategoriesByName(config.getCategory());
+        if (categories.size() == 0) {
+            log.info("Was unable to find a category named " + config.getCategory() + " creating a new category");
+            client.getChannelById(config.getTextChannelId())
+                    .ifPresent(channel -> channel.asServerChannel().ifPresent(serverChan -> serverChan.getServer()
+                            .createChannelCategoryBuilder().setName(config.getCategory()).create().join()));
+        }
+    }
+
+    /**
+     * This will verify that all channels that are used by this bot will be
+     * inside of the "discord_category" named category.
+     */
+    public void migrateChannels() {
+        var channelIdSet = Sqlite.getInstance().getChannelIdToChannelName().values();
+        var channelIdList = new ArrayList<String>();
+        for (var id : channelIdSet) {
+            channelIdList.add(id);
+        }
+        var category = client.getChannelCategoriesByName(config.getCategory()).iterator().next();
+        channelIdList.add(config.getVoiceChannelId());
+        channelIdList.add(config.getTextChannelId());
+        channelIdList.stream().forEach(channelId -> {
+            client.getChannelById(channelId).ifPresent(channel -> {
+                channel.asServerVoiceChannel().ifPresent(schan -> schan.updateCategory(category));
+                channel.asServerTextChannel().ifPresent(schan -> schan.updateCategory(category));
+            });
+        });
     }
 
     /**
@@ -91,7 +117,7 @@ public class DiscordBot {
      * @param content The text to send to the channel.
      */
     public void sendMessage(String content) {
-        client.getChannelById(CHAT_CHANNEL)
+        client.getChannelById(config.getTextChannelId())
                 .ifPresent(channel -> channel.asTextChannel().ifPresent(text -> text.sendMessage(content)));
     }
 
@@ -167,12 +193,9 @@ public class DiscordBot {
      * @throws NumberFormatException Thrown when chat_channel cannot be turned into
      *                               a long
      */
-    public static void configureInstance(String discord_token, String chat_channel, String default_voice, Logger log)
-            throws NumberFormatException {
-        DiscordBot.TOKEN = discord_token;
-        DiscordBot.VOICE_CHANNEL = default_voice;
-        DiscordBot.CHAT_CHANNEL = Long.parseLong(chat_channel);
-        DiscordBot.log = log;
+    public static void configureInstance(DiscordConfig config) {
+        DiscordBot.config = config;
+        DiscordBot.log = config.getLogger();
     }
 
     /**
@@ -204,7 +227,7 @@ public class DiscordBot {
      * @param name The name of the player to move
      */
     public void movePlayerDefault(String name) {
-        movePlayer(name, VOICE_CHANNEL);
+        movePlayer(name, config.getVoiceChannelId());
     }
 
     /**
@@ -228,5 +251,12 @@ public class DiscordBot {
      */
     private void updateActivePlayerCount() {
         client.updateActivity(ActivityType.WATCHING, activePlayerCount + " players");
+    }
+
+    /**
+     * Disconnects from the Discord API
+     */
+    public void disconnect() {
+        client.disconnect();
     }
 }
