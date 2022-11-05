@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.therealkeyis'
-version '1.1-Beta-1'
+version '1.0.1'
 
 repositories {
     mavenCentral()
