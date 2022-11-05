@@ -3,45 +3,19 @@ package me.therealkeyis;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-
-import me.therealkeyis.models.LocationEntry;
-import me.therealkeyis.models.UserInfo;
 
 /**
  * Singleton that handles all SQL interactions
  */
 public class Sqlite {
-    /**
-     * The default sqlite instance
-     */
     private static Sqlite instance;
-
-    /**
-     * The absolute path of the sqlite database
-     */
     private static String path;
-
-    /**
-     * The plugin logger
-     */
     private static Logger log;
-
-    /**
-     * The database connection
-     */
     private Connection con;
 
-    /**
-     * Creates a new global sqlite instance
-     */
     private Sqlite() {
         try {
-            log.info(path);
             con = DriverManager.getConnection("jdbc:sqlite:" + path);
             log.info("Connected to database");
             createTables();
@@ -71,84 +45,6 @@ public class Sqlite {
     }
 
     /**
-     * Gets all of the location entries in the database
-     * 
-     * @return A list of location entries
-     */
-    public List<LocationEntry> getLocationEntries() {
-        List<LocationEntry> locationEntries = new ArrayList<>();
-        try (var stmt = con.createStatement()) {
-            var rs = stmt.executeQuery("SELECT * FROM Locations;");
-            while (rs.next()) {
-                var name = rs.getString(1);
-                var x1 = rs.getDouble(2);
-                var z1 = rs.getDouble(3);
-                var x2 = rs.getDouble(4);
-                var z2 = rs.getDouble(5);
-                locationEntries.add(new LocationEntry(name, x1, z1, x2, z2));
-            }
-        } catch (SQLException e) {
-            log.warning(e.toString());
-        }
-        return locationEntries;
-    }
-
-    public List<UserInfo> getUserInfo() {
-        List<UserInfo> userInfos = new ArrayList<>();
-        try (var stmt = con.createStatement()) {
-            var rs = stmt.executeQuery("SELECT * FROM McToDiscord;");
-            while (rs.next()) {
-                userInfos.add(new UserInfo(rs.getString(1), rs.getString(2), rs.getString(3)));
-            }
-        } catch (SQLException e) {
-            log.warning(e.toString());
-        }
-        return userInfos;
-    }
-
-    /**
-     * Binds a location in the minecraft world to
-     *
-     * @param entry a location entry object
-     * @return True of successful, false otherwise
-     */
-    public boolean writeLocationToChannel(LocationEntry entry) {
-        var insertStmt = "INSERT INTO Locations (discord_vc, x1, z1, x2, z2) values (?, ?, ?, ?, ?);";
-        try (var prep = con.prepareStatement(insertStmt)) {
-            prep.setString(1, entry.locationName);
-            prep.setDouble(2, entry.x1);
-            prep.setDouble(3, entry.z1);
-            prep.setDouble(4, entry.x2);
-            prep.setDouble(5, entry.z2);
-            prep.executeUpdate();
-        } catch (SQLException e) {
-            log.warning(e.toString());
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Creates a map of channelId to LocationEntry names
-     * 
-     * @return map
-     */
-    public Map<String, String> getChannelIdToChannelName() {
-        Map<String, String> channelMap = new HashMap<>();
-        try (var stmt = con.createStatement()) {
-            var rs = stmt.executeQuery("SELECT * FROM LocationToId");
-            while (rs.next()) {
-                var name = rs.getString(1);
-                var id = rs.getString(2);
-                channelMap.put(name, id);
-            }
-        } catch (SQLException e) {
-            log.warning(e.toString());
-        }
-        return channelMap;
-    }
-
-    /**
      * Links minecraft and discord usernames
      * 
      * @param discord   A user's discord username
@@ -162,6 +58,32 @@ public class Sqlite {
             prep.setString(1, discord);
             prep.setString(2, minecraft);
             prep.setString(3, guild);
+            prep.executeUpdate();
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Binds a location in the minecraft world to
+     * 
+     * @param vc The name of the voice channel
+     * @param x1 The first x position
+     * @param z1 The first z position
+     * @param x2 The second x position
+     * @param z2 The second z position
+     * @return True of successful, false otherwise
+     */
+    public boolean writeLocationToChannel(String vc, double x1, double z1, double x2, double z2) {
+        var insertStmt = "INSERT INTO Locations (discord_vc, x1, z1, x2, z2) values (?, ?, ?, ?, ?);";
+        try (var prep = con.prepareStatement(insertStmt)) {
+            prep.setString(1, vc);
+            prep.setDouble(2, x1);
+            prep.setDouble(3, z1);
+            prep.setDouble(4, x2);
+            prep.setDouble(5, z2);
             prep.executeUpdate();
         } catch (SQLException e) {
             log.warning(e.toString());
@@ -190,49 +112,105 @@ public class Sqlite {
         return true;
     }
 
-    // /**
-    // * Gets the guild associated with the provided minecraft username
-    // *
-    // * @param mcUsername A player's minecraft username
-    // * @return The guild id for the server the player is in. Empty string if none
-    // */
-    // public String getGuildFromMCUser(String mcUsername) {
-    // var selectStmt = "SELECT guild FROM McToDiscord where minecraft = ?";
+    /**
+     * Gets the guild associated with the provided minecraft username
+     * 
+     * @param mcUsername A player's minecraft username
+     * @return The guild id for the server the player is in. Empty string if none
+     */
+    public String getGuildFromMCUser(String mcUsername) {
+        var selectStmt = "SELECT guild FROM McToDiscord where minecraft = ?";
 
-    // try (var prep = con.prepareStatement(selectStmt)) {
-    // prep.setString(1, mcUsername);
-    // var res = prep.executeQuery();
-    // if (res.next()) {
-    // return res.getString(1);
-    // }
-    // } catch (SQLException e) {
-    // log.warning(e.toString());
-    // return "";
-    // }
-    // return "";
-    // }
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, mcUsername);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
 
-    // /**
-    // * Gets a user's discord name and number using their minecraft username
-    // *
-    // * @param mcUsername A player's minecraft username
-    // * @return The name#number of a user or empty string if DNE
-    // */
-    // public String getDiscordFromUser(String mcUsername) {
-    // var selectStmt = "SELECT discord FROM McToDiscord where minecraft = ?";
+    /**
+     * Gets a user's discord name and number using their minecraft username
+     * 
+     * @param mcUsername A player's minecraft username
+     * @return The name#number of a user or empty string if DNE
+     */
+    public String getDiscordFromUser(String mcUsername) {
+        var selectStmt = "SELECT discord FROM McToDiscord where minecraft = ?";
 
-    // try (var prep = con.prepareStatement(selectStmt)) {
-    // prep.setString(1, mcUsername);
-    // var res = prep.executeQuery();
-    // if (res.next()) {
-    // return res.getString(1);
-    // }
-    // } catch (SQLException e) {
-    // log.warning(e.toString());
-    // return "";
-    // }
-    // return "";
-    // }
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, mcUsername);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
+
+    /**
+     * Gets a channel id given the channel name
+     * 
+     * @param name The name of the channel
+     * @return The channel id or empty string if DNE
+     */
+    public String getChannelIdFromName(String name) {
+        var selectStmt = "SELECT discord_vc FROM LocationToId where vc_id = ?";
+
+        try (var prep = con.prepareStatement(selectStmt)) {
+            prep.setString(1, name);
+            var res = prep.executeQuery();
+            if (res.next()) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
+
+    /**
+     * Gets all of the possible positions and compares them with
+     * the current location. Returns the name of the location if
+     * current location is within that area.
+     * 
+     * @param currentLocation A player's current position
+     * @return The name of the position the player is in, empty string if none match
+     */
+    public String getPossiblePositions(LocationPair currentLocation) {
+        var selectStmt = "SELECT * from Locations";
+        try (var stmt = con.createStatement()) {
+            var rs = stmt.executeQuery(selectStmt);
+            while (rs.next()) {
+                // if currentLocation.x
+                var name = rs.getString(1);
+                var x1 = rs.getDouble(2);
+                var z1 = rs.getDouble(3);
+                var x2 = rs.getDouble(4);
+                var z2 = rs.getDouble(5);
+                boolean res = ((currentLocation.x < x1 && currentLocation.x > x2)
+                        || (currentLocation.x > x1 && currentLocation.x < x2)) &&
+                        ((currentLocation.z < z1 && currentLocation.z > z2)
+                                || (currentLocation.z > z1 && currentLocation.z < z2));
+                if (res)
+                    return name;
+                // if (currentLocation.x < x1 && currentLocation.x > x2)
+            }
+        } catch (SQLException e) {
+            log.warning(e.toString());
+            return "";
+        }
+        return "";
+    }
 
     /**
      * Configures the path and the logger for the global Sqlite instance
@@ -242,7 +220,7 @@ public class Sqlite {
      */
     public static void configureInstance(String path, Logger log) {
         Sqlite.log = log;
-        Sqlite.path = path + "/mcdc.sqlite3";
+        Sqlite.path = path;
     }
 
     /**
