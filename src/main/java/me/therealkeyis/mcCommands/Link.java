@@ -10,19 +10,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-/**
- * Implements the Link command which connects a minecraft username to
- * a discord username
- */
 public class Link implements CommandExecutor {
     Sqlite sqlite;
     Logger log;
 
-    /**
-     * Creates a new link
-     * 
-     * @param logger The logger for the plugin
-     */
     public Link(Logger logger) {
         this.sqlite = Sqlite.getInstance();
         this.log = logger;
