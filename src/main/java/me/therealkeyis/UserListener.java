@@ -18,9 +18,9 @@ public class UserListener implements Listener {
     Logger log;
     Sqlite sqlite;
 
-    public UserListener(Logger log) {
+    public UserListener(Logger log, Sqlite sqlite) {
         this.log = log;
-        this.sqlite = Sqlite.getInstance();
+        this.sqlite = sqlite;
     }
 
     @EventHandler
