@@ -16,12 +16,33 @@ import java.util.Objects;
  * Main class that handles chat interactions
  */
 public class MinecraftPlugin extends JavaPlugin {
+    /**
+     * A Discord Bot Instance
+     */
     DiscordBot bot;
+    /**
+     * The plugin configuration
+     */
     FileConfiguration config = this.getConfig();
+    /**
+     * The default discord token value
+     */
     public static final String DEFAULT_DISCORD_TOKEN = "Your Discord Bot Token";
+    /**
+     * The default discord channel value
+     */
     public static final String DEFAULT_DISCORD_CHANNEL = "Your Discord Channel Token";
+    /**
+     * The default discord voice value
+     */
     public static final String DEFAULT_DISCORD_VOICE = "Default voice channel";
+    /**
+     * The default discord category value
+     */
     public static final String DEFAULT_DISCORD_CATEGORY = "Minecraft Voice";
+    /**
+     * The default discord server value
+     */
     public static final String DEFAULT_DISCORD_SERVER = "Discord Server";
 
     /**

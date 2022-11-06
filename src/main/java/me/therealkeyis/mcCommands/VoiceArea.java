@@ -36,6 +36,12 @@ public class VoiceArea implements CommandExecutor {
     public static NamespacedKey z1;
     private Logger log;
 
+    /**
+     * Creates a new voice area
+     * 
+     * @param plug The minecraft plugin
+     * @param log  The plugin logger
+     */
     public VoiceArea(MinecraftPlugin plug, Logger log) {
         use_count = new NamespacedKey(plug, "use_count");
         x1 = new NamespacedKey(plug, "x1");

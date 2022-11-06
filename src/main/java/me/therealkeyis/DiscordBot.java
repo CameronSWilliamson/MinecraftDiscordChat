@@ -201,12 +201,7 @@ public class DiscordBot {
     /**
      * Configures variables required for discord interaction.
      *
-     * @param discord_token The token of the Discord Bot
-     * @param chat_channel  The channel to send messages to
-     * @param default_voice The default voice channel
-     * @param log           The plugin logger
-     * @throws NumberFormatException Thrown when chat_channel cannot be turned into
-     *                               a long
+     * @param config A discord configuration object
      */
     public static void configureInstance(DiscordConfig config) {
         DiscordBot.config = config;
