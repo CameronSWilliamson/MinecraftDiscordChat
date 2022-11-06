@@ -60,7 +60,7 @@ public class CreateVoice implements CommandExecutor {
             return false;
         if (label.equals("voicearea"))
             sender.sendMessage(
-                    "Warning: This command is depricated and will be removed in a future update. Use /createvoice instead.");
+                    "Warning: This command is deprecated and will be removed in a future update. Use /createvoice instead.");
         var player = (Player) sender;
         var item = new ItemStack(Material.STICK, 1);
         var meta = item.getItemMeta();

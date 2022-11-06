@@ -157,9 +157,10 @@ To get a local copy up and running follow these simple example steps.
 
 Getting started with the plugin is easy. 
 
-- Join the minecraft server and run `/link <username>#<numbers>` to link your minecraft username to your Discord username.
-- In the Minecraft server you can run `/voicearea <area name>` to recieve a stick named `"AreaDefiner <area name>"`. Right click in one corner of the area you want to define as a voice area and then right click in the opposite corner. This will create a voice area with the name you specified linked to a new voice channel in Discord that players will be moved to when they enter the voice area.
-- In the Minecraft server you can also run `/request <feature / bug>` to request a feature or report a bug. This will send a mesage to the developer of the plugin on Discord.
+- Join the minecraft server and run `/discord <username>#<numbers>` to link your minecraft username to your Discord username.
+- In the Minecraft server you can run `/createvoice <area name>` to recieve a stick named `"AreaDefiner <area name>"`. Right click in one corner of the area you want to define as a voice area and then right click in the opposite corner. This will create a voice area with the name you specified linked to a new voice channel in Discord that players will be moved to when they enter the voice area.
+- In the Minecraft server you can run `/deletevoice <area name>` to delete the voice area with the name you specified.
+- In the Minecraft server you can also run `/request <feature/bug>` to request a feature or report a bug. This will send a mesage to the developer of the plugin on Discord.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
