@@ -33,7 +33,7 @@ public class LinkDiscord implements CommandExecutor {
             var pattern = Pattern.compile("\\w+#\\d{4}");
             if (label.equals("link"))
                 sender.sendMessage(
-                        "Warning: This command is depricated and will be removed in a future update. Use /discord instead.");
+                        "Warning: This command is deprecated and will be removed in a future update. Use /discord instead.");
 
             if (pattern.matcher(args[0]).find()) {
                 var info = new UserInfo(args[0], sender.getName(), DiscordBot.getInstance().getGuild(args[0]));
