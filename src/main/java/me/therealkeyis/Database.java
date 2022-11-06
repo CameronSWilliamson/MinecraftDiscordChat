@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.tools.DocumentationTool.Location;
-
 import me.therealkeyis.models.LocationEntry;
 import me.therealkeyis.models.LocationPair;
 import me.therealkeyis.models.UserInfo;

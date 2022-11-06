@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.activity.ActivityType;
-import org.javacord.api.entity.channel.ChannelCategory;
 import org.javacord.api.entity.channel.ServerVoiceChannel;
 import org.javacord.api.entity.intent.Intent;
 import org.javacord.api.entity.server.Server;
@@ -13,7 +12,6 @@ import org.javacord.api.entity.user.User;
 import me.therealkeyis.models.DiscordConfig;
 
 import java.util.logging.Logger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
