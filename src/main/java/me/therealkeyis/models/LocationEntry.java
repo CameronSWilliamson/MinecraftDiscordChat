@@ -82,7 +82,7 @@ public class LocationEntry {
      * @param playerLocation The player's current location
      * @return True if inside, false otherwise
      */
-    public boolean IsBetween(LocationPair playerLocation) {
+    public boolean IsSurrounding(LocationPair playerLocation) {
         return IsBetween(playerLocation.x, playerLocation.z);
     }
 }
