@@ -25,7 +25,7 @@ public class VoiceArea implements CommandExecutor {
     /**
      * The name of the field use_count
      */
-    public static NamespacedKey use_count;
+    public static NamespacedKey useCount;
     /**
      * The name of the x1 field
      */
@@ -34,6 +34,9 @@ public class VoiceArea implements CommandExecutor {
      * The name of the z1 field
      */
     public static NamespacedKey z1;
+    /**
+     * The plugin logger
+     */
     private Logger log;
 
     /**
@@ -43,7 +46,7 @@ public class VoiceArea implements CommandExecutor {
      * @param log  The plugin logger
      */
     public VoiceArea(MinecraftPlugin plug, Logger log) {
-        use_count = new NamespacedKey(plug, "use_count");
+        useCount = new NamespacedKey(plug, "use_count");
         x1 = new NamespacedKey(plug, "x1");
         z1 = new NamespacedKey(plug, "z1");
         this.log = log;
@@ -61,7 +64,7 @@ public class VoiceArea implements CommandExecutor {
         var channelName = String.join(" ", args);
         log.info(channelName);
         meta.setDisplayName(ItemName + " " + channelName);
-        meta.getPersistentDataContainer().set(use_count, PersistentDataType.INTEGER, 0);
+        meta.getPersistentDataContainer().set(useCount, PersistentDataType.INTEGER, 0);
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
         return true;
