@@ -13,7 +13,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
-import me.therealkeyis.mcCommands.VoiceArea;
+import me.therealkeyis.mcCommands.CreateVoice;
 import me.therealkeyis.models.LocationEntry;
 import me.therealkeyis.models.LocationPair;
 
@@ -94,26 +94,26 @@ public class UserListener implements Listener {
         var item = inventory.getItemInMainHand();
         if (item.getType() != Material.STICK)
             return;
-        if (!item.getItemMeta().getDisplayName().contains(VoiceArea.ItemName))
+        if (!item.getItemMeta().getDisplayName().contains(CreateVoice.ItemName))
             return;
-        if (VoiceArea.useCount == null)
+        if (CreateVoice.useCount == null)
             return;
         var meta = item.getItemMeta();
         var dataContainer = meta.getPersistentDataContainer();
         int counts;
-        if (dataContainer.has(VoiceArea.useCount, PersistentDataType.INTEGER))
-            counts = dataContainer.get(VoiceArea.useCount, PersistentDataType.INTEGER);
+        if (dataContainer.has(CreateVoice.useCount, PersistentDataType.INTEGER))
+            counts = dataContainer.get(CreateVoice.useCount, PersistentDataType.INTEGER);
         else
             return;
         if (counts == 0) {
-            dataContainer.set(VoiceArea.x1, PersistentDataType.DOUBLE, local.x);
-            dataContainer.set(VoiceArea.z1, PersistentDataType.DOUBLE, local.z);
-            dataContainer.set(VoiceArea.useCount, PersistentDataType.INTEGER, counts + 1);
+            dataContainer.set(CreateVoice.x1, PersistentDataType.DOUBLE, local.x);
+            dataContainer.set(CreateVoice.z1, PersistentDataType.DOUBLE, local.z);
+            dataContainer.set(CreateVoice.useCount, PersistentDataType.INTEGER, counts + 1);
             item.setItemMeta(meta);
         } else if (counts == 1) {
-            var x1 = dataContainer.get(VoiceArea.x1, PersistentDataType.DOUBLE);
-            var z1 = dataContainer.get(VoiceArea.z1, PersistentDataType.DOUBLE);
-            var channelName = item.getItemMeta().getDisplayName().replace(VoiceArea.ItemName + " ", "");
+            var x1 = dataContainer.get(CreateVoice.x1, PersistentDataType.DOUBLE);
+            var z1 = dataContainer.get(CreateVoice.z1, PersistentDataType.DOUBLE);
+            var channelName = item.getItemMeta().getDisplayName().replace(CreateVoice.ItemName + " ", "");
             if (channelName.length() != 0) {
                 database.writeNewLocationEntry(new LocationEntry(channelName, x1, z1, local.x, local.z));
                 var channel = DiscordBot.getInstance().createChannel(channelName, database.getGuildId(playerName));

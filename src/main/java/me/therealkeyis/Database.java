@@ -231,6 +231,30 @@ public class Database {
     }
 
     /**
+     * Removes a voice area
+     * 
+     * @return
+     */
+    public boolean deleteVoiceArea(String channelName) {
+        log.info("deleting channel: " + channelName);
+        var deleteStmt = "DELETE FROM LocationToId where vc_id = ?";
+        try {
+            var prep = connection.prepareStatement(deleteStmt);
+            prep.setString(1, channelNameToId.get(channelName));
+            prep.executeUpdate();
+            prep = connection.prepareStatement("DELETE from LocationToId where discord_vc = ?");
+            prep.setString(1, channelName);
+            prep.executeUpdate();
+            locationEntries.removeIf(entry -> entry.locationName.equals(channelName));
+            channelNameToId.remove(channelName);
+        } catch (SQLException err) {
+            log.warning(err.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Configures the Database instance
      * 
      * @param path The path to the database folder

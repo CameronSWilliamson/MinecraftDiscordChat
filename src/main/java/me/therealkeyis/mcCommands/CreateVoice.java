@@ -17,7 +17,7 @@ import me.therealkeyis.MinecraftPlugin;
 /**
  * The voice area command handler
  */
-public class VoiceArea implements CommandExecutor {
+public class CreateVoice implements CommandExecutor {
     /**
      * The stick item name
      */
@@ -45,7 +45,7 @@ public class VoiceArea implements CommandExecutor {
      * @param plug The minecraft plugin
      * @param log  The plugin logger
      */
-    public VoiceArea(MinecraftPlugin plug, Logger log) {
+    public CreateVoice(MinecraftPlugin plug, Logger log) {
         useCount = new NamespacedKey(plug, "use_count");
         x1 = new NamespacedKey(plug, "x1");
         z1 = new NamespacedKey(plug, "z1");
@@ -58,6 +58,9 @@ public class VoiceArea implements CommandExecutor {
             return false;
         if (args.length < 1)
             return false;
+        if (label.equals("voicearea"))
+            sender.sendMessage(
+                    "Warning: This command is depricated and will be removed in a future update. Use /createvoice instead.");
         var player = (Player) sender;
         var item = new ItemStack(Material.STICK, 1);
         var meta = item.getItemMeta();

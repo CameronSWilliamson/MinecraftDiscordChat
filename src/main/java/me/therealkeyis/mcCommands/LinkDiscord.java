@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
  * Implements the Link command which connects a minecraft username to
  * a discord username
  */
-public class Link implements CommandExecutor {
+public class LinkDiscord implements CommandExecutor {
     Logger log;
 
     /**
@@ -23,7 +23,7 @@ public class Link implements CommandExecutor {
      * 
      * @param logger The logger for the plugin
      */
-    public Link(Logger logger) {
+    public LinkDiscord(Logger logger) {
         this.log = logger;
     }
 
@@ -31,9 +31,14 @@ public class Link implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
             var pattern = Pattern.compile("\\w+#\\d{4}");
+            if (label.equals("link"))
+                sender.sendMessage(
+                        "Warning: This command is depricated and will be removed in a future update. Use /discord instead.");
+
             if (pattern.matcher(args[0]).find()) {
                 var info = new UserInfo(args[0], sender.getName(), DiscordBot.getInstance().getGuild(args[0]));
                 Database.getInstance().writeNewUserEntry(info);
+                sender.sendMessage("Successfully linked " + sender.getName() + " to " + args[0]);
                 return true;
             }
         }
