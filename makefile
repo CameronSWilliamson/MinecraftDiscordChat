@@ -16,11 +16,11 @@ clean:
 	rm -rf spigot
 
 spigot:
-	bash ./setup_env.sh
+	bash scripts/setup_env.sh
 
 run: spigot compile
 	cp build/libs/* spigot/plugins/
-	bash run_server.sh
+	bash scripts/run_server.sh
 
 doc:
 	gradle javadoc
@@ -32,4 +32,4 @@ rmdb:
 	rm -f ./spigot/plugins/MinecraftDiscordChat/mcdc.sqlite
 
 deploy:
-	./deploy.sh
+	bash scripts/deploy.sh
