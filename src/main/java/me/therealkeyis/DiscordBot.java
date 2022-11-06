@@ -169,6 +169,31 @@ public class DiscordBot {
     }
 
     /**
+     * Removes the provided channel from the Discord server.
+     * 
+     * @param channelId The Discord Channel ID
+     * @return true if successful, false otherwise
+     */
+    public boolean deleteChannel(String channelId) {
+        log.info("deleting channel with id: " + channelId);
+        var channel_opt = client.getChannelById(channelId);
+        if (!channel_opt.isPresent())
+            return false;
+        log.info("Got channel");
+        var server_opt = channel_opt.get().asServerVoiceChannel();
+        if (!server_opt.isPresent())
+            return false;
+        log.info("Got server channel");
+        playerToChannel.forEach((key, value) -> {
+            if (value.equals(channelId)) {
+                movePlayerDefault(key);
+            }
+        });
+        server_opt.get().delete().join();
+        return true;
+    }
+
+    /**
      * Gets the guild id from a discord username with id
      * 
      * @param usernameWithId The discord username with an id

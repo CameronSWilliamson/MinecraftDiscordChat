@@ -3,9 +3,10 @@ package me.therealkeyis;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.therealkeyis.mcCommands.Link;
+import me.therealkeyis.mcCommands.LinkDiscord;
 import me.therealkeyis.mcCommands.Request;
-import me.therealkeyis.mcCommands.VoiceArea;
+import me.therealkeyis.mcCommands.CreateVoice;
+import me.therealkeyis.mcCommands.DeleteVoice;
 import me.therealkeyis.models.DiscordConfig;
 
 import java.util.Objects;
@@ -66,8 +67,12 @@ public class MinecraftPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new McToDcListener(bot, getLogger()), this);
         getServer().getPluginManager().registerEvents(new UserListener(getLogger()), this);
         Objects.requireNonNull(getCommand("request")).setExecutor(new Request());
-        Objects.requireNonNull(getCommand("link")).setExecutor(new Link(getLogger()));
-        Objects.requireNonNull(getCommand("voicearea")).setExecutor(new VoiceArea(this, getLogger()));
+        Objects.requireNonNull(getCommand("link")).setExecutor(new LinkDiscord(getLogger()));
+        Objects.requireNonNull(getCommand("discord")).setExecutor(new LinkDiscord(getLogger()));
+        Objects.requireNonNull(getCommand("voicearea")).setExecutor(new CreateVoice(this, getLogger()));
+        Objects.requireNonNull(getCommand("createvoice")).setExecutor(new CreateVoice(this, getLogger()));
+        Objects.requireNonNull(getCommand("deletevoice")).setExecutor(new DeleteVoice(getLogger()));
+
     }
 
     /**

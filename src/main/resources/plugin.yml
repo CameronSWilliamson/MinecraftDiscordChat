@@ -8,7 +8,16 @@ commands:
     usage: /request <feature description>
   link:
     description: Links a minecraft account to a discord account
-    usage: /link <discord username>
+    usage: /link <username#numbers>
+  discord:
+    description: Links a minecraft account to a discord account
+    usage: /discord <username#numbers>
   voicearea:
     description: Gives user a stick to create a location for a voice chat
     usage: /voicearea <area name>
+  createvoice:
+    description: Gives user a stick to create a location for a voice chat
+    usage: /createvoice <area name>
+  deletevoice:
+    description: Deletes the voice area from Discord
+    usage: /deletevoice <area name>
