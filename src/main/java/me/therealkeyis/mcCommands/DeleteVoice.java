@@ -9,9 +9,20 @@ import org.bukkit.command.CommandSender;
 import me.therealkeyis.Database;
 import me.therealkeyis.DiscordBot;
 
+/**
+ * The delete voice command handler
+ */
 public class DeleteVoice implements CommandExecutor {
+    /**
+     * The plugin logger
+     */
     private Logger log;
 
+    /**
+     * Creates a new delete voice command
+     * 
+     * @param log The plugin logger
+     */
     public DeleteVoice(Logger log) {
         this.log = log;
     }
