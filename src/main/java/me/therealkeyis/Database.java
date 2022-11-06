@@ -233,7 +233,8 @@ public class Database {
     /**
      * Removes a voice area
      * 
-     * @return
+     * @param channelName name of the channel to remove
+     * @return true if successful, false otherwise
      */
     public boolean deleteVoiceArea(String channelName) {
         log.info("deleting channel: " + channelName);
