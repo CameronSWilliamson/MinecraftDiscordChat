@@ -86,6 +86,8 @@
 
 This Spigot server plugin unifies the world of Minecraft with the complexities of a Discord server. Users can create areas in specific Minecraft servers that link to a Discord voice channel. When players enter a new area in-game, they are moved to the corresponding voice channel and return to the default voice channel after exiting. In addition, user’s chat messages in Minecraft are redirected to a discord text channel and vice versa. This allows for a more immersive and seamless experience for users of the server.
 
+Version 1.0.0 of this plugin was created during the 2022 Gonzaga University Hackathon and was written in less than 12 hours. It did not earn any awards but most of the competitors thought it was a super cool idea.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
