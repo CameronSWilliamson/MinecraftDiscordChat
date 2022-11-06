@@ -95,11 +95,7 @@ public class DiscordBot {
      * inside of the "discord_category" named category.
      */
     public void migrateChannels() {
-        var channelIdSet = Sqlite.getInstance().getChannelIdToChannelName().values();
-        var channelIdList = new ArrayList<String>();
-        for (var id : channelIdSet) {
-            channelIdList.add(id);
-        }
+        var channelIdList = Database.getInstance().getAllChannelIds();
         var category = client.getChannelCategoriesByName(config.getCategory()).iterator().next();
         channelIdList.add(config.getVoiceChannelId());
         channelIdList.add(config.getTextChannelId());

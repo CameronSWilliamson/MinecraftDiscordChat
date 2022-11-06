@@ -29,7 +29,7 @@ public class UserListener implements Listener {
     /**
      * A sqlite connection
      */
-    Cache cache;
+    Database database;
 
     /**
      * Creates a new UserListener
@@ -38,7 +38,7 @@ public class UserListener implements Listener {
      */
     public UserListener(Logger log) {
         this.log = log;
-        this.cache = Cache.getInstance();
+        this.database = Database.getInstance();
     }
 
     /**
@@ -68,11 +68,11 @@ public class UserListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         var location = event.getTo();
-        var locationEntry = cache.getEntryBetween(new LocationPair(location.getX(), location.getZ()));
-        var discordName = cache.getDiscordUsername(event.getPlayer().getDisplayName());
+        var locationEntry = database.getSurroundingLocation(new LocationPair(location.getX(), location.getZ()));
+        var discordName = database.getDiscordUsername(event.getPlayer().getDisplayName());
         if (discordName.length() > 0) {
             if (locationEntry != null) {
-                var channelId = cache.getChannelId(locationEntry.locationName);
+                var channelId = database.getChannelId(locationEntry.locationName);
                 DiscordBot.getInstance().movePlayer(discordName, channelId);
             } else {
                 DiscordBot.getInstance().movePlayerDefault(discordName);
@@ -114,12 +114,9 @@ public class UserListener implements Listener {
             double z1 = dataContainer.get(VoiceArea.z1, PersistentDataType.DOUBLE);
             var channelName = item.getItemMeta().getDisplayName().replace(VoiceArea.ItemName + " ", "");
             if (channelName.length() != 0) {
-                cache.writeNewLocationEntry(new LocationEntry(channelName, x1, z1, local.x, local.z));
-                log.info(channelName);
-                log.info(cache.getGuildId(playerName));
-                var channel = DiscordBot.getInstance().createChannel(channelName, cache.getGuildId(playerName));
-                log.info(channel);
-                cache.writeNewChannelEntry(channelName, channel);
+                database.writeNewLocationEntry(new LocationEntry(channelName, x1, z1, local.x, local.z));
+                var channel = DiscordBot.getInstance().createChannel(channelName, database.getGuildId(playerName));
+                database.writeNewChannelEntry(channelName, channel);
             } else {
                 log.info("No channel name provided");
             }
