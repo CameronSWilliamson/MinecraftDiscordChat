@@ -1,3 +1,5 @@
-discord_token: "Your Discord Bot Token"
-discord_channel: "Your Discord Channel Token"
-discord_voice: "Default voice channel"
+api_token: "Your Discord Bot Token"
+default_text_channel_id: "Your Discord Channel Token"
+default_voice_channel_id: "Default voice channel"
+default_category_name: "Minecraft Voice"
+default_server_id: "Discord server"

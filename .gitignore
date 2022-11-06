@@ -55,3 +55,4 @@ gradle-app.setting
 .gradletasknamecache
 spigot/
 config/
+deploy.sh

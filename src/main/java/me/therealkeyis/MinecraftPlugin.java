@@ -18,6 +18,11 @@ import java.util.Objects;
 public class MinecraftPlugin extends JavaPlugin {
     DiscordBot bot;
     FileConfiguration config = this.getConfig();
+    public static final String DEFAULT_DISCORD_TOKEN = "Your Discord Bot Token";
+    public static final String DEFAULT_DISCORD_CHANNEL = "Your Discord Channel Token";
+    public static final String DEFAULT_DISCORD_VOICE = "Default voice channel";
+    public static final String DEFAULT_DISCORD_CATEGORY = "Minecraft Voice";
+    public static final String DEFAULT_DISCORD_SERVER = "Discord Server";
 
     /**
      * Handles initialization of the plugin
@@ -27,8 +32,8 @@ public class MinecraftPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Database.configureInstance(getDataFolder().getAbsolutePath(), getLogger());
-        defaultConfig();
-        DiscordBot.configureInstance(new DiscordConfig(config, getLogger()));
+        saveDefaultConfig();
+        DiscordBot.configureInstance(new DiscordConfig(config, getLogger(), () -> saveConfig()));
         bot = DiscordBot.getInstance();
         registerEvents();
     }
@@ -45,23 +50,10 @@ public class MinecraftPlugin extends JavaPlugin {
     }
 
     /**
-     * Creates the default configuration file if there is no configuration file in
-     * <server>/plugins/MinecraftDiscordChat
-     */
-    private void defaultConfig() {
-        config.addDefault("discord_token", "Your Discord Bot Token");
-        config.addDefault("discord_channel", "Your Discord Channel Token");
-        config.addDefault("discord_voice", "Your default Discord Voice Channel id");
-        config.addDefault("discord_category", "Minecraft Voice");
-        saveDefaultConfig();
-    }
-
-    /**
      * Executes cleanup on server stop
      */
     @Override
     public void onDisable() {
-        getLogger().info("onDisable is called!");
-        bot.disconnect();
+        super.onDisable();
     }
 }
