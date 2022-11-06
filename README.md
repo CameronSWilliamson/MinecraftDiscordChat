@@ -84,7 +84,7 @@
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-This is a Spigot server plugin that unifies the world of a minecraft server with the complexities of a Discord Server. Users can create areas in Minecraft that link to a discord voice channel such that when they enter an area they are moved to the corresponding voice channel and when they leave they are returned to the default voice channel. This allows for a more immersive experience for users of the server. In addition, user's chat messages in Minecraft are redirected to a discord text channel and vice versa. This allows for a more seamless experience for users of the server.
+This Spigot server plugin unifies the world of Minecraft with the complexities of a Discord server. Users can create areas in specific Minecraft servers that link to a Discord voice channel. When players enter a new area in-game, they are moved to the corresponding voice channel and return to the default voice channel after exiting. In addition, user’s chat messages in Minecraft are redirected to a discord text channel and vice versa. This allows for a more immersive and seamless experience for users of the server.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -92,7 +92,6 @@ This is a Spigot server plugin that unifies the world of a minecraft server with
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
@@ -117,13 +116,13 @@ To get a local copy up and running follow these simple example steps.
     echo eula=true > eula.txt
     ```
 
-3. Either clone this repo and [build from source](###build-from-source) or download the latest release from [Releases](https://github.com/cameronswilliamson/minecraftdiscordchat/releases)
+3. Either clone this repo and [build from source](###build-from-source) or download the latest release from [Releases](https://github.com/cameronswilliamson/minecraftDiscordchat/releases)
 4. Place this file in `minecraft_server/plugins/` and open `minecraft_server/plugins/MinecraftDiscordChat/config.yml` and fill in the required fields:
 
     ```yaml
-    api_token: "YOUR_DISCORD_BOT_TOKEN"
-    default_category_name: "The name of the discord category to use"
-    default_server_id: "The server ID of the discord server to use"
+    api_token: "YOUR_Discord_BOT_TOKEN"
+    default_category_name: "The name of the Discord category to use"
+    default_server_id: "The server ID of the Discord server to use"
     # The following are optional
     default_text_channel_id: "The default text channel ID to use"
     default_voice_channel_id: "The default voice channel ID to use"
@@ -158,9 +157,9 @@ To get a local copy up and running follow these simple example steps.
 
 Getting started with the plugin is easy. 
 
-- Join the minecraft server and run `/link <username>#<numbers>` to link your minecraft username to your discord username.
+- Join the minecraft server and run `/link <username>#<numbers>` to link your minecraft username to your Discord username.
 - In the Minecraft server you can run `/voicearea <area name>` to recieve a stick named `"AreaDefiner <area name>"`. Right click in one corner of the area you want to define as a voice area and then right click in the opposite corner. This will create a voice area with the name you specified linked to a new voice channel in Discord that players will be moved to when they enter the voice area.
-- In the Minecraft server you can also run `/request <feature / bug>` to request a feature or report a bug. This will send a mesage to the developer of the plugin on discord.
+- In the Minecraft server you can also run `/request <feature / bug>` to request a feature or report a bug. This will send a mesage to the developer of the plugin on Discord.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
