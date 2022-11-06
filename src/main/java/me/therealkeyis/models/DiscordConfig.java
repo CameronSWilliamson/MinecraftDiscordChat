@@ -89,26 +89,48 @@ public class DiscordConfig {
         return log;
     }
 
+    /**
+     * Changes the configured textChannelId to be the one provided and makes the
+     * change in the config.yml file
+     * 
+     * @param textChannelId A Discord Text Channel ID
+     */
     public void setTextChannelId(String textChannelId) {
         this.textChannelId = textChannelId;
         config.set("default_text_channel_id", textChannelId);
         saveConfig.run();
     }
 
+    /**
+     * Changes the configured voiceChannelId to be the one provided and makes the
+     * change in the config.yml file
+     * 
+     * @param voiceChannelId A Discord Voice Channel ID
+     */
     public void setVoiceChannelId(String voiceChannelId) {
         this.voiceChannelId = voiceChannelId;
         config.set("default_voice_channel_id", voiceChannelId);
         saveConfig.run();
     }
 
+    /**
+     * Changes the configured category to be the one provided and makes the change
+     * in the config.yml file
+     * 
+     * @param category A Discord Category Name
+     */
     public void setCategory(String category) {
         this.category = category;
         config.set("default_category_name", category);
         saveConfig.run();
     }
 
+    /**
+     * Sets the configured logger
+     * 
+     * @param log A plugin logger
+     */
     public void setLog(Logger log) {
         this.log = log;
     }
-
 }

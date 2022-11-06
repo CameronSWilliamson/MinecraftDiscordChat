@@ -26,6 +26,7 @@ public class McToDcListener implements Listener {
      * Creates a Minecraft to Discord listener to watch for chat events
      * 
      * @param bot A discord bot (should just call the singleton instance)
+     * @param log A plugin logger
      */
     public McToDcListener(DiscordBot bot, Logger log) {
         this.bot = bot;
