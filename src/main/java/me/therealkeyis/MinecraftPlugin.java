@@ -26,7 +26,7 @@ public class MinecraftPlugin extends JavaPlugin {
      */
     @Override
     public void onEnable() {
-        Sqlite.configureInstance(getDataFolder().getAbsolutePath(), getLogger());
+        Database.configureInstance(getDataFolder().getAbsolutePath(), getLogger());
         defaultConfig();
         DiscordBot.configureInstance(new DiscordConfig(config, getLogger()));
         bot = DiscordBot.getInstance();
